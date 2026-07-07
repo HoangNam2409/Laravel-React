@@ -1,1 +1,9 @@
 @import "tailwindcss";
+.icon-error {
+    color: #bf1650;
+}
+
+.icon-error::before {
+  display: inline;
+  content: "⚠ ";
+}
