@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { login } from "../services/AuthService";
 
 type FormValues = {
     email: string;
@@ -30,6 +32,7 @@ const resolver: Resolver<FormValues> = async (values) => {
 
 export default function Login() {
     const [isVisible, setIsVisible] = useState(false);
+    const navigate = useNavigate();
 
     const toggleVisibility = () => {
         setIsVisible((prevState) => !prevState);
@@ -43,7 +46,12 @@ export default function Login() {
         resolver: resolver,
     });
 
-    const onSubmit = handleSubmit((data) => console.log(data));
+    const loginHandle = handleSubmit(async (data) => {
+        const logged = await login(data);
+        if (logged) {
+            navigate("/dashboard");
+        }
+    });
 
     return (
         <main className="md:min-h-screen flex items-center justify-center py-4 px-4 md:px-8">
@@ -75,7 +83,7 @@ export default function Login() {
                                 Sign in
                             </h1>
 
-                            <form onSubmit={onSubmit} className="space-y-6">
+                            <form onSubmit={loginHandle} className="space-y-6">
                                 <div>
                                     <label
                                         htmlFor="email"
@@ -89,11 +97,13 @@ export default function Login() {
                                         id="email"
                                         name="email"
                                         placeholder="john@readymadeui.com"
-                                       //  required
+                                        //  required
                                         className="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600"
                                     />
                                     {errors?.email && (
-                                        <p className="icon-error">{errors.email.message}</p>
+                                        <p className="icon-error">
+                                            {errors.email.message}
+                                        </p>
                                     )}
                                 </div>
                                 <div className="relative">
@@ -141,10 +151,12 @@ export default function Login() {
                                         name="password"
                                         placeholder="••••••••"
                                         className="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600"
-                                       //  required
+                                        //  required
                                     />
                                     {errors?.password && (
-                                        <p className="icon-error">{errors.password.message}</p>
+                                        <p className="icon-error">
+                                            {errors.password.message}
+                                        </p>
                                     )}
                                 </div>
 
