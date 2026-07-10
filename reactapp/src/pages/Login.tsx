@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import { useNavigate } from "react-router";
+
 import { login } from "../services/AuthService";
+import { useToast } from "../hooks/useToast";
 
 type FormValues = {
     email: string;
@@ -32,6 +34,7 @@ const resolver: Resolver<FormValues> = async (values) => {
 
 export default function Login() {
     const [isVisible, setIsVisible] = useState(false);
+    const { setMessage } = useToast();
     const navigate = useNavigate();
 
     const toggleVisibility = () => {
@@ -49,6 +52,7 @@ export default function Login() {
     const loginHandle = handleSubmit(async (data) => {
         const logged = await login(data);
         if (logged) {
+            setMessage("Đăng nhập thành công", "success");
             navigate("/dashboard");
         }
     });
@@ -69,9 +73,9 @@ export default function Login() {
                                     Welcome Back
                                 </h2>
                                 <p className="text-slate-300 text-base font-medium mt-4 leading-relaxed">
-                                    Join our private network to discover job
-                                    opportunities and connect with
-                                    professionals.
+                                    Explore exclusive real estate opportunities
+                                    and connect with professional property
+                                    consultants.
                                 </p>
                             </div>
                         </div>

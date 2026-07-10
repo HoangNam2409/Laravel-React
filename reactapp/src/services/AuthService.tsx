@@ -1,6 +1,6 @@
 import axiosInstance from "../config/axios";
-import toast from 'react-hot-toast';
 import { handleAxiosError } from "../helpers/axiosHelper";
+
 
 type LoginPayload = {
     email: string;
@@ -13,7 +13,7 @@ const login = async (payload: LoginPayload): Promise<boolean> => {
             email: payload.email,
             password: payload.password,
         });
-        toast.success('Successfully toasted!')
+
         return true;
     } catch (error) {
         handleAxiosError(error);

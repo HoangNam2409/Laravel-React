@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useToast } from "../hooks/useToast";
+import { showNotify } from "../helpers/myHelper";
 
 const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+    const { message, type, setMessage } = useToast();
 
-export default Dashboard
+    useEffect(() => {
+        showNotify(message, type, setMessage);
+    }, [message, type, setMessage]);
+
+    return <div>Dashboard</div>;
+};
+
+export default Dashboard;
