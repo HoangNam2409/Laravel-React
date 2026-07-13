@@ -22,4 +22,22 @@ const showNotify = (
     }
 };
 
-export { showNotify };
+const showNotifyRedux = (
+    message: string,
+    type: ToastType,
+) => {
+    if (message) {
+        switch (type) {
+            case "success":
+                toast.success(message);
+                break;
+            case "error":
+                toast.error(message);
+                break;
+            default:
+                break;
+        }
+    }
+};
+
+export { showNotify, showNotifyRedux };

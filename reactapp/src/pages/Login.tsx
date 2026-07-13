@@ -3,7 +3,9 @@ import { useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import { useNavigate } from "react-router";
 
 import { login } from "../services/AuthService";
-import { useToast } from "../hooks/useToast";
+import { setToast } from "../redux/slice/ToastSlice";
+import { useAppDispatch } from "../hooks/useRedux";
+// import { useToast } from "../hooks/useToast";
 
 type FormValues = {
     email: string;
@@ -16,14 +18,14 @@ const resolver: Resolver<FormValues> = async (values) => {
     if (!values.email) {
         errors.email = {
             type: "required",
-            message: "Email is required.",
+            message: "Chưa nhập email.",
         };
     }
 
     if (!values.password) {
         errors.password = {
             type: "required",
-            message: "Password is required.",
+            message: "Chưa nhập mật khẩu.",
         };
     }
     return {
@@ -34,8 +36,9 @@ const resolver: Resolver<FormValues> = async (values) => {
 
 export default function Login() {
     const [isVisible, setIsVisible] = useState(false);
-    const { setMessage } = useToast();
+    // const { setMessage } = useToast();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const toggleVisibility = () => {
         setIsVisible((prevState) => !prevState);
@@ -52,7 +55,10 @@ export default function Login() {
     const loginHandle = handleSubmit(async (data) => {
         const logged = await login(data);
         if (logged) {
-            setMessage("Đăng nhập thành công", "success");
+            //setMessage("Đăng nhập thành công", "success"); //Trường hợp sử dụng Context
+            dispatch(
+                setToast({ message: "Đăng nhập thành công", type: "success" }),
+            );
             navigate("/dashboard");
         }
     });

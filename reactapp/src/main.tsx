@@ -6,8 +6,9 @@ import { RouterProvider } from "react-router/dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { Toaster } from "react-hot-toast";
-
+import { Provider } from "react-redux";
 import { ToastProvider } from "./context/ToastContext";
+import { store } from "./redux/store";
 
 const router = createBrowserRouter([
     {
@@ -22,11 +23,14 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
     // <StrictMode>
+    <Provider store={store}>
         <ToastProvider>
             <RouterProvider router={router} />
             <div>
                 <Toaster position="bottom-right" reverseOrder={false} />
             </div>
         </ToastProvider>
+    </Provider>,
+
     // </StrictMode>,
 );
