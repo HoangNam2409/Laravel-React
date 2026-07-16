@@ -6,6 +6,9 @@ import { login } from "../services/AuthService";
 import { setToast } from "../redux/slice/ToastSlice";
 import { useAppDispatch } from "../hooks/useRedux";
 // import { useToast } from "../hooks/useToast";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+import { setAuthLogin } from "@/redux/slice/AuthSlice";
 
 type FormValues = {
     email: string;
@@ -36,6 +39,7 @@ const resolver: Resolver<FormValues> = async (values) => {
 
 export default function Login() {
     const [isVisible, setIsVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     // const { setMessage } = useToast();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -53,13 +57,24 @@ export default function Login() {
     });
 
     const loginHandle = handleSubmit(async (data) => {
-        const logged = await login(data);
-        if (logged) {
-            //setMessage("Đăng nhập thành công", "success"); //Trường hợp sử dụng Context
-            dispatch(
-                setToast({ message: "Đăng nhập thành công", type: "success" }),
-            );
-            navigate("/dashboard");
+        try {
+            setLoading(true);
+            const auth = await login(data);
+            if (auth) {
+                //setMessage("Đăng nhập thành công", "success"); //Trường hợp sử dụng Context
+                dispatch(
+                    setToast({
+                        message: "Đăng nhập thành công",
+                        type: "success",
+                    }),
+                );
+                dispatch(setAuthLogin(auth));
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
     });
 
@@ -206,12 +221,25 @@ export default function Login() {
                                         Forgot password?
                                     </a>
                                 </div>
-                                <button
+                                {/* <button
                                     type="submit"
                                     className="w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                                 >
                                     Sign in
-                                </button>
+                                </button> */}
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                    // size="sm"
+                                    className={
+                                        "w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                                    }
+                                >
+                                    {loading && (
+                                        <Spinner data-icon="inline-start" />
+                                    )}
+                                    {loading ? "Loading..." : "Sign in"}
+                                </Button>
                             </form>
 
                             <div className="my-8 flex items-center gap-4">
